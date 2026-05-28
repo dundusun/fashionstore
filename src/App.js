@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     axios.get(`/aem/content/fashionstore/us/en/home.model.json`, {
       headers: {
-        "Authorization": AUTH,
+        "ngrok-skip-browser-warning": "true",
       },
     })
       .then((res) => {

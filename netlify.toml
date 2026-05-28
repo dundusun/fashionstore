@@ -3,4 +3,4 @@
   to = "https://spellbind-bacterium-sternness.ngrok-free.dev/:splat"
   status = 200
   force = true
-  headers = {ngrok-skip-browser-warning = "true"}
+  headers = {ngrok-skip-browser-warning = "true", Authorization = "Basic YWRtaW46YWRtaW4="}
