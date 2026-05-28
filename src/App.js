@@ -9,12 +9,12 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const isLocal = window.location.hostname === "localhost";
-    const targetUrl = isLocal 
-      ? `/aem/content/fashionstore/us/en/home.model.json`
-      : `/.netlify/functions/aem-proxy?path=/content/fashionstore/us/en/home.model.json`;
-
-    axios.get(targetUrl)
+    axios.get(`/content/fashionstore/us/en/home.model.json`, {
+      headers: {
+        "Authorization": "Basic " + btoa("admin:admin"),
+        "ngrok-skip-browser-warning": "true",
+      },
+    })
       .then((res) => {
         console.log("AEM Data:", res.data);
         setAemData(res.data);
