@@ -10,6 +10,7 @@ module.exports = function (app) {
       pathRewrite: { "^/aem": "" },
       headers: {
         "ngrok-skip-browser-warning": "true",
+        "Authorization": "Basic YWRtaW46YWRtaW4=",
       },
     })
   );

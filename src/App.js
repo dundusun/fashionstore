@@ -2,20 +2,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import HomePage from "./HomePage";
 
-const AUTH = "Basic " + btoa(
-  `${process.env.REACT_APP_AEM_USER}:${process.env.REACT_APP_AEM_PASS}`
-);
+
 function App() {
   const [aemData, setAemData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`/aem/content/fashionstore/us/en/home.model.json`, {
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-      },
-    })
+    axios.get(`/aem/content/fashionstore/us/en/home.model.json`)
       .then((res) => {
         console.log("AEM Data:", res.data);
         setAemData(res.data);
