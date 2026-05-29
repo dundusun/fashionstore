@@ -16,8 +16,23 @@ function HomePage({ data }) {
   let navigation = data.navigation || [];
   const pageTitle = data.pageTitle || 'Fashion Store';
   const categories = data.featuredCategories || [];
-  const products = data.trendingProducts || [];
   const newsletter = data.newsletter || {};
+
+  const [liveProducts, setLiveProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        setLiveProducts(data);
+        setLoadingProducts(false);
+      })
+      .catch(err => {
+        console.error("Error fetching live products:", err);
+        setLoadingProducts(false);
+      });
+  }, []);
 
   const alignmentMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
   const heroJustify = alignmentMap[hero.contentAlignment] || 'flex-start';
@@ -121,35 +136,40 @@ function HomePage({ data }) {
         </section>
       )}
 
-      {/* ─── TRENDING PRODUCTS ─── */}
-      {products.length > 0 && (
-        <section style={{ padding: '80px 60px', background: '#fafafa' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Trending Now</h2>
-            <Link to="/shop" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>View All</Link>
+      {/* ─── LIVE PRODUCTS FROM MONGODB ─── */}
+      <section style={{ padding: '80px 60px', background: '#fafafa' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Latest Drops</h2>
+            <span style={{ background: '#4CAF50', color: '#fff', fontSize: '0.8rem', padding: '4px 8px', borderRadius: '4px', fontWeight: 700 }}>LIVE DB</span>
           </div>
-          
+          <Link to="/shop" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>View All</Link>
+        </div>
+        
+        {loadingProducts ? (
+          <div style={{ textAlign: 'center', padding: '50px 0', fontSize: '1.2rem', color: '#666' }}>Fetching from MongoDB... ⏳</div>
+        ) : liveProducts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '50px 0', color: '#999' }}>No products found in database.</div>
+        ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px' }}>
-            {products.map(prod => (
-              <div key={prod.id} style={{ cursor: 'pointer' }} className="product-card">
+            {liveProducts.map(prod => (
+              <div key={prod._id} style={{ cursor: 'pointer' }} className="product-card">
                 <div style={{ position: 'relative', height: '380px', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px', background: '#eee' }}>
                   <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} className="prod-img" />
-                  {prod.badge && (
-                    <span style={{ position: 'absolute', top: '16px', left: '16px', background: '#000', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
-                      {prod.badge}
-                    </span>
-                  )}
+                  <span style={{ position: 'absolute', top: '16px', left: '16px', background: '#000', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                    {prod.category}
+                  </span>
                   <div className="add-to-cart" style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', background: '#fff', color: '#000', textAlign: 'center', padding: '12px', fontWeight: 700, borderRadius: '6px', opacity: 0, transform: 'translateY(10px)', transition: 'all 0.3s ease' }}>
                     Quick Add +
                   </div>
                 </div>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 8px 0', color: '#222' }}>{prod.name}</h3>
-                <p style={{ fontSize: '1rem', fontWeight: 700, color: '#000', margin: 0 }}>{prod.price}</p>
+                <p style={{ fontSize: '1rem', fontWeight: 700, color: '#000', margin: 0 }}>${prod.price.toFixed(2)}</p>
               </div>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* ─── NEWSLETTER ─── */}
       {newsletter.title && (
