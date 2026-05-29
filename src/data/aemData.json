@@ -1,0 +1,41 @@
+{
+  "pageTitle": "Home",
+  "pageDescription": "",
+  "hero": {
+    "pretitle": "Hero banner",
+    "title": "Home",
+    "description": "",
+    "contentAlignment": "center",
+    "imageSrc": "/content/dam/fashion-app/products/casual-linen-top.jpg",
+    "ctaLabel": "Men",
+    "ctaUrl": "/content/fashionstore/us/en/home/men"
+  },
+  "navigation": [
+    {
+      "title": "Home",
+      "url": "/content/fashionstore/us/en/home.html",
+      "children": [
+        {
+          "title": "Men",
+          "url": "/content/fashionstore/us/en/home/men.html"
+        },
+        {
+          "title": "Women",
+          "url": "/content/fashionstore/us/en/home/women.html"
+        },
+        {
+          "title": "Kids",
+          "url": "/content/fashionstore/us/en/home/kids.html"
+        },
+        {
+          "title": "New Arrivals",
+          "url": "/content/fashionstore/us/en/home/new-arrivals.html"
+        },
+        {
+          "title": "Sale",
+          "url": "/content/fashionstore/us/en/home/sale.html"
+        }
+      ]
+    }
+  ]
+}
