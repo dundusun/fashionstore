@@ -6,7 +6,7 @@ import axios from "axios";
 import Navbar from "../Navbar";
 
 function CheckoutPage() {
-  const { cart, totalPrice, setCart, totalItems } = useCart();
+  const { cart, totalPrice, setCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
