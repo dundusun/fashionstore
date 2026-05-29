@@ -52,7 +52,9 @@ function HomePage({ data }) {
   const heroTextAlign = hero.contentAlignment || 'left';
 
   const heroImage = hero.imageSrc
-    ? `${BASE_URL}${hero.imageSrc}`
+    ? (process.env.NODE_ENV === "production"
+        ? `/api/image?path=${encodeURIComponent(hero.imageSrc)}`
+        : `${BASE_URL}${hero.imageSrc}`)
     : 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&q=80';
 
   // ── Render ───────────────────────────────────────────────────────────────────
