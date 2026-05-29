@@ -39,8 +39,18 @@ function HomePage({ data }) {
 
   // ── Extract from flat HomePageModel JSON ─────────────────────────────────────
   const hero       = data.hero       || {};
-  const navigation = data.navigation || [];
+  let navigation   = data.navigation || [];
   const pageTitle  = data.pageTitle  || 'Fashion Store';
+
+  // In AEM, the Navigation component often returns the root page ("Home") 
+  // as the single top-level item, and all actual menu pages (Men, Women, etc.) as its children.
+  // We can flatten this so they all display horizontally in the React header.
+  if (navigation.length === 1 && navigation[0].children && navigation[0].children.length > 0) {
+    navigation = [
+      { title: navigation[0].title, url: navigation[0].url },
+      ...navigation[0].children
+    ];
+  }
 
   // Alignment → CSS justify-content mapping for hero content
   const alignmentMap = {
