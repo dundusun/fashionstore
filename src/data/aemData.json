@@ -1,75 +1,550 @@
 {
-  "pageTitle": "Dundusun",
-  "pageDescription": "Discover the latest trends in fashion. Premium quality clothing for everyone.",
+  "pageTitle": "Home",
+  "pageDescription": "",
   "hero": {
-    "pretitle": "New Season Arrivals",
-    "title": "Spring Summer 2026",
-    "description": "Embrace the new season with our latest collection of premium, sustainable fashion designed to make you stand out.",
-    "contentAlignment": "left",
-    "imageSrc": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80",
-    "ctaLabel": "Shop Collection",
-    "ctaUrl": "/collection"
+    "pretitle": "Hero banner",
+    "title": "Home",
+    "description": "",
+    "contentAlignment": "center",
+    "imageSrc": "/images/dam/casual-linen-top.jpg",
+    "ctaLabel": "Men",
+    "ctaUrl": "/content/fashionstore/us/en/home/men"
   },
   "navigation": [
     {
       "title": "Home",
-      "url": "/",
+      "url": "/content/fashionstore/us/en/home.html",
       "children": [
-        { "title": "Men", "url": "/men" },
-        { "title": "Women", "url": "/women" },
-        { "title": "Kids", "url": "/kids" },
-        { "title": "Accessories", "url": "/accessories" },
-        { "title": "Sale", "url": "/sale" }
+        {
+          "title": "Men",
+          "url": "/content/fashionstore/us/en/home/men.html",
+          "children": [
+            {
+              "title": "Clothing",
+              "url": "/content/fashionstore/us/en/home/men/clothing.html",
+              "children": [
+                {
+                  "title": "Shirts",
+                  "url": "/content/fashionstore/us/en/home/men/clothing/shirts.html"
+                },
+                {
+                  "title": "T-Shirts",
+                  "url": "/content/fashionstore/us/en/home/men/clothing/t-shirts.html"
+                },
+                {
+                  "title": "Jeans",
+                  "url": "/content/fashionstore/us/en/home/men/clothing/jeans.html"
+                },
+                {
+                  "title": "Trousers",
+                  "url": "/content/fashionstore/us/en/home/men/clothing/trousers.html"
+                },
+                {
+                  "title": "Jackets",
+                  "url": "/content/fashionstore/us/en/home/men/clothing/jackets.html"
+                },
+                {
+                  "title": "Suits",
+                  "url": "/content/fashionstore/us/en/home/men/clothing/suits.html"
+                }
+              ]
+            },
+            {
+              "title": "Shoes",
+              "url": "/content/fashionstore/us/en/home/men/shoes.html",
+              "children": [
+                {
+                  "title": "Formal Shoes",
+                  "url": "/content/fashionstore/us/en/home/men/shoes/formal-shoes.html"
+                },
+                {
+                  "title": "Sneakers",
+                  "url": "/content/fashionstore/us/en/home/men/shoes/sneakers.html"
+                },
+                {
+                  "title": "Boots",
+                  "url": "/content/fashionstore/us/en/home/men/shoes/boots.html"
+                },
+                {
+                  "title": "Loafers",
+                  "url": "/content/fashionstore/us/en/home/men/shoes/loafers.html"
+                },
+                {
+                  "title": "Sandals",
+                  "url": "/content/fashionstore/us/en/home/men/shoes/sandals.html"
+                }
+              ]
+            },
+            {
+              "title": "Accessories",
+              "url": "/content/fashionstore/us/en/home/men/accessories.html",
+              "children": [
+                {
+                  "title": "Watches",
+                  "url": "/content/fashionstore/us/en/home/men/accessories/watches.html"
+                },
+                {
+                  "title": "Wallets",
+                  "url": "/content/fashionstore/us/en/home/men/accessories/wallets.html"
+                },
+                {
+                  "title": "Belts",
+                  "url": "/content/fashionstore/us/en/home/men/accessories/belts.html"
+                },
+                {
+                  "title": "Sunglasses",
+                  "url": "/content/fashionstore/us/en/home/men/accessories/sunglasses.html"
+                },
+                {
+                  "title": "Ties",
+                  "url": "/content/fashionstore/us/en/home/men/accessories/ties.html"
+                }
+              ]
+            },
+            {
+              "title": "Ethnic Wear",
+              "url": "/content/fashionstore/us/en/home/men/ethnic-wear.html",
+              "children": [
+                {
+                  "title": "Kurtas",
+                  "url": "/content/fashionstore/us/en/home/men/ethnic-wear/kurtas.html"
+                },
+                {
+                  "title": "Sherwanis",
+                  "url": "/content/fashionstore/us/en/home/men/ethnic-wear/sherwanis.html"
+                },
+                {
+                  "title": "Nehru Jackets",
+                  "url": "/content/fashionstore/us/en/home/men/ethnic-wear/nehru-jackets.html"
+                },
+                {
+                  "title": "Dhotis",
+                  "url": "/content/fashionstore/us/en/home/men/ethnic-wear/dhotis.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Women",
+          "url": "/content/fashionstore/us/en/home/women.html",
+          "children": [
+            {
+              "title": "Clothing",
+              "url": "/content/fashionstore/us/en/home/women/clothing.html",
+              "children": [
+                {
+                  "title": "Dresses",
+                  "url": "/content/fashionstore/us/en/home/women/clothing/dresses.html"
+                },
+                {
+                  "title": "Tops",
+                  "url": "/content/fashionstore/us/en/home/women/clothing/tops.html"
+                },
+                {
+                  "title": "T-Shirts",
+                  "url": "/content/fashionstore/us/en/home/women/clothing/t-shirts.html"
+                },
+                {
+                  "title": "Jeans",
+                  "url": "/content/fashionstore/us/en/home/women/clothing/jeans.html"
+                },
+                {
+                  "title": "Jackets",
+                  "url": "/content/fashionstore/us/en/home/women/clothing/jackets.html"
+                },
+                {
+                  "title": "Skirts",
+                  "url": "/content/fashionstore/us/en/home/women/clothing/skirts.html"
+                }
+              ]
+            },
+            {
+              "title": "Shoes",
+              "url": "/content/fashionstore/us/en/home/women/shoes.html",
+              "children": [
+                {
+                  "title": "Heels",
+                  "url": "/content/fashionstore/us/en/home/women/shoes/heels.html"
+                },
+                {
+                  "title": "Sneakers",
+                  "url": "/content/fashionstore/us/en/home/women/shoes/sneakers.html"
+                },
+                {
+                  "title": "Boots",
+                  "url": "/content/fashionstore/us/en/home/women/shoes/boots.html"
+                },
+                {
+                  "title": "Flats",
+                  "url": "/content/fashionstore/us/en/home/women/shoes/flats.html"
+                },
+                {
+                  "title": "Sandals",
+                  "url": "/content/fashionstore/us/en/home/women/shoes/sandals.html"
+                }
+              ]
+            },
+            {
+              "title": "Accessories",
+              "url": "/content/fashionstore/us/en/home/women/accessories.html",
+              "children": [
+                {
+                  "title": "Bags",
+                  "url": "/content/fashionstore/us/en/home/women/accessories/bags.html"
+                },
+                {
+                  "title": "Jewelry",
+                  "url": "/content/fashionstore/us/en/home/women/accessories/jewelry.html"
+                },
+                {
+                  "title": "Sunglasses",
+                  "url": "/content/fashionstore/us/en/home/women/accessories/sunglasses.html"
+                },
+                {
+                  "title": "Watches",
+                  "url": "/content/fashionstore/us/en/home/women/accessories/watches.html"
+                },
+                {
+                  "title": "Scarves",
+                  "url": "/content/fashionstore/us/en/home/women/accessories/scarves.html"
+                }
+              ]
+            },
+            {
+              "title": "Ethnic Wear",
+              "url": "/content/fashionstore/us/en/home/women/ethnic-wear.html",
+              "children": [
+                {
+                  "title": "Sarees",
+                  "url": "/content/fashionstore/us/en/home/women/ethnic-wear/sarees.html"
+                },
+                {
+                  "title": "Kurtas",
+                  "url": "/content/fashionstore/us/en/home/women/ethnic-wear/kurtas.html"
+                },
+                {
+                  "title": "Lehengas",
+                  "url": "/content/fashionstore/us/en/home/women/ethnic-wear/lehengas.html"
+                },
+                {
+                  "title": "Salwar Suits",
+                  "url": "/content/fashionstore/us/en/home/women/ethnic-wear/salwar-suits.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Kids",
+          "url": "/content/fashionstore/us/en/home/kids.html",
+          "children": [
+            {
+              "title": "Boys",
+              "url": "/content/fashionstore/us/en/home/kids/boys.html",
+              "children": [
+                {
+                  "title": "T-Shirts",
+                  "url": "/content/fashionstore/us/en/home/kids/boys/t-shirts.html"
+                },
+                {
+                  "title": "Shirts",
+                  "url": "/content/fashionstore/us/en/home/kids/boys/shirts.html"
+                },
+                {
+                  "title": "Jeans",
+                  "url": "/content/fashionstore/us/en/home/kids/boys/jeans.html"
+                },
+                {
+                  "title": "Shorts",
+                  "url": "/content/fashionstore/us/en/home/kids/boys/shorts.html"
+                },
+                {
+                  "title": "Jackets",
+                  "url": "/content/fashionstore/us/en/home/kids/boys/jackets.html"
+                }
+              ]
+            },
+            {
+              "title": "Girls",
+              "url": "/content/fashionstore/us/en/home/kids/girls.html",
+              "children": [
+                {
+                  "title": "Dresses",
+                  "url": "/content/fashionstore/us/en/home/kids/girls/dresses.html"
+                },
+                {
+                  "title": "Tops",
+                  "url": "/content/fashionstore/us/en/home/kids/girls/tops.html"
+                },
+                {
+                  "title": "Skirts",
+                  "url": "/content/fashionstore/us/en/home/kids/girls/skirts.html"
+                },
+                {
+                  "title": "Jeans",
+                  "url": "/content/fashionstore/us/en/home/kids/girls/jeans.html"
+                },
+                {
+                  "title": "Jackets",
+                  "url": "/content/fashionstore/us/en/home/kids/girls/jackets.html"
+                }
+              ]
+            },
+            {
+              "title": "Footwear",
+              "url": "/content/fashionstore/us/en/home/kids/footwear.html",
+              "children": [
+                {
+                  "title": "Sneakers",
+                  "url": "/content/fashionstore/us/en/home/kids/footwear/sneakers.html"
+                },
+                {
+                  "title": "Sandals",
+                  "url": "/content/fashionstore/us/en/home/kids/footwear/sandals.html"
+                },
+                {
+                  "title": "Boots",
+                  "url": "/content/fashionstore/us/en/home/kids/footwear/boots.html"
+                },
+                {
+                  "title": "School Shoes",
+                  "url": "/content/fashionstore/us/en/home/kids/footwear/school-shoes.html"
+                },
+                {
+                  "title": "Flip Flops",
+                  "url": "/content/fashionstore/us/en/home/kids/footwear/flip-flops.html"
+                }
+              ]
+            },
+            {
+              "title": "Accessories",
+              "url": "/content/fashionstore/us/en/home/kids/accessories.html",
+              "children": [
+                {
+                  "title": "Bags",
+                  "url": "/content/fashionstore/us/en/home/kids/accessories/bags.html"
+                },
+                {
+                  "title": "Watches",
+                  "url": "/content/fashionstore/us/en/home/kids/accessories/watches.html"
+                },
+                {
+                  "title": "Caps",
+                  "url": "/content/fashionstore/us/en/home/kids/accessories/caps.html"
+                },
+                {
+                  "title": "Sunglasses",
+                  "url": "/content/fashionstore/us/en/home/kids/accessories/sunglasses.html"
+                }
+              ]
+            },
+            {
+              "title": "Infant (0-2 Yrs)",
+              "url": "/content/fashionstore/us/en/home/kids/infant.html",
+              "children": [
+                {
+                  "title": "Bodysuits",
+                  "url": "/content/fashionstore/us/en/home/kids/infant/bodysuits.html"
+                },
+                {
+                  "title": "Rompers",
+                  "url": "/content/fashionstore/us/en/home/kids/infant/rompers.html"
+                },
+                {
+                  "title": "Sets",
+                  "url": "/content/fashionstore/us/en/home/kids/infant/sets.html"
+                },
+                {
+                  "title": "Sleepwear",
+                  "url": "/content/fashionstore/us/en/home/kids/infant/sleepwear.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "New Arrivals",
+          "url": "/content/fashionstore/us/en/home/new-arrivals.html",
+          "children": [
+            {
+              "title": "New In Women",
+              "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-women.html",
+              "children": [
+                {
+                  "title": "Clothing",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-women/clothing.html"
+                },
+                {
+                  "title": "Shoes",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-women/shoes.html"
+                },
+                {
+                  "title": "Accessories",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-women/accessories.html"
+                }
+              ]
+            },
+            {
+              "title": "New In Men",
+              "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-men.html",
+              "children": [
+                {
+                  "title": "Clothing",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-men/clothing.html"
+                },
+                {
+                  "title": "Shoes",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-men/shoes.html"
+                },
+                {
+                  "title": "Accessories",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-men/accessories.html"
+                }
+              ]
+            },
+            {
+              "title": "New In Kids",
+              "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-kids.html",
+              "children": [
+                {
+                  "title": "Boys",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-kids/boys.html"
+                },
+                {
+                  "title": "Girls",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-kids/girls.html"
+                },
+                {
+                  "title": "Infant",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/new-in-kids/infant.html"
+                }
+              ]
+            },
+            {
+              "title": "Trending Now",
+              "url": "/content/fashionstore/us/en/home/new-arrivals/trending-now.html",
+              "children": [
+                {
+                  "title": "Top Picks",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/trending-now/top-picks.html"
+                },
+                {
+                  "title": "Most Loved",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/trending-now/most-loved.html"
+                },
+                {
+                  "title": "Editor's Choice",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/trending-now/editors-choice.html"
+                }
+              ]
+            },
+            {
+              "title": "Just Dropped",
+              "url": "/content/fashionstore/us/en/home/new-arrivals/just-dropped.html"
+            },
+            {
+              "title": "Best Sellers",
+              "url": "/content/fashionstore/us/en/home/new-arrivals/best-sellers.html",
+              "children": [
+                {
+                  "title": "Clothing",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/best-sellers/clothing.html"
+                },
+                {
+                  "title": "Shoes",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/best-sellers/shoes.html"
+                },
+                {
+                  "title": "Accessories",
+                  "url": "/content/fashionstore/us/en/home/new-arrivals/best-sellers/accessories.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Sale",
+          "url": "/content/fashionstore/us/en/home/sale.html",
+          "children": [
+            {
+              "title": "Women",
+              "url": "/content/fashionstore/us/en/home/sale/womens-sale.html",
+              "children": [
+                {
+                  "title": "Clothing",
+                  "url": "/content/fashionstore/us/en/home/sale/womens-sale/clothing.html"
+                },
+                {
+                  "title": "Shoes",
+                  "url": "/content/fashionstore/us/en/home/sale/womens-sale/shoes.html"
+                },
+                {
+                  "title": "Accessories",
+                  "url": "/content/fashionstore/us/en/home/sale/womens-sale/accessories.html"
+                }
+              ]
+            },
+            {
+              "title": "Men",
+              "url": "/content/fashionstore/us/en/home/sale/mens-sale.html",
+              "children": [
+                {
+                  "title": "Clothing",
+                  "url": "/content/fashionstore/us/en/home/sale/mens-sale/clothing.html"
+                },
+                {
+                  "title": "Shoes",
+                  "url": "/content/fashionstore/us/en/home/sale/mens-sale/shoes.html"
+                },
+                {
+                  "title": "Accessories",
+                  "url": "/content/fashionstore/us/en/home/sale/mens-sale/accessories.html"
+                }
+              ]
+            },
+            {
+              "title": "Kids",
+              "url": "/content/fashionstore/us/en/home/sale/kids-sale.html",
+              "children": [
+                {
+                  "title": "Boys",
+                  "url": "/content/fashionstore/us/en/home/sale/kids-sale/boys.html"
+                },
+                {
+                  "title": "Girls",
+                  "url": "/content/fashionstore/us/en/home/sale/kids-sale/girls.html"
+                },
+                {
+                  "title": "Infant",
+                  "url": "/content/fashionstore/us/en/home/sale/kids-sale/infant.html"
+                }
+              ]
+            },
+            {
+              "title": "Clearance",
+              "url": "/content/fashionstore/us/en/home/sale/clearance.html",
+              "children": [
+                {
+                  "title": "Last Chance",
+                  "url": "/content/fashionstore/us/en/home/sale/clearance/last-chance.html"
+                },
+                {
+                  "title": "Under $20",
+                  "url": "/content/fashionstore/us/en/home/sale/clearance/under-20.html"
+                },
+                {
+                  "title": "Under $50",
+                  "url": "/content/fashionstore/us/en/home/sale/clearance/under-50.html"
+                }
+              ]
+            }
+          ]
+        }
       ]
     }
   ],
-  "featuredCategories": [
-    {
-      "title": "Women's Fashion",
-      "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80",
-      "link": "/women"
-    },
-    {
-      "title": "Men's Collection",
-      "image": "https://images.unsplash.com/photo-1516826957135-700ede19c6ce?w=800&q=80",
-      "link": "/men"
-    },
-    {
-      "title": "Kids & Baby",
-      "image": "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=800&q=80",
-      "link": "/kids"
-    }
-  ],
-  "trendingProducts": [
-    {
-      "id": "p1",
-      "name": "Classic Linen Blazer",
-      "price": "$129.00",
-      "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
-      "badge": "New"
-    },
-    {
-      "id": "p2",
-      "name": "Silk Evening Dress",
-      "price": "$189.00",
-      "image": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80"
-    },
-    {
-      "id": "p3",
-      "name": "Casual Cotton T-Shirt",
-      "price": "$34.00",
-      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
-      "badge": "Bestseller"
-    },
-    {
-      "id": "p4",
-      "name": "Leather Crossbody Bag",
-      "price": "$89.00",
-      "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80"
-    }
-  ],
-  "newsletter": {
-    "title": "Join Our VIP Club",
-    "description": "Subscribe to get 15% off your first order and exclusive access to new drops."
-  }
+  ":type": "fashionstore/components/page",
+  ":items": {},
+  ":itemsOrder": []
 }

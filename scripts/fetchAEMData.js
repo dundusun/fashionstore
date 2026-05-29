@@ -58,20 +58,57 @@ const processImages = async (obj, authHeader) => {
   }
 };
 
+// Helper to parse AEM infinity JSON into a clean navigation array
+const buildNavTree = (node, basePath) => {
+  const children = [];
+  if (!node) return children;
+  
+  for (const key of Object.keys(node)) {
+    if (typeof node[key] === 'object' && node[key]['jcr:primaryType'] === 'cq:Page') {
+      const pageContent = node[key]['jcr:content'] || {};
+      const title = pageContent.navTitle || pageContent['jcr:title'] || key;
+      const url = `${basePath}/${key}.html`;
+      
+      const item = { title, url };
+      const subChildren = buildNavTree(node[key], `${basePath}/${key}`);
+      if (subChildren.length > 0) {
+        item.children = subChildren;
+      }
+      children.push(item);
+    }
+  }
+  return children;
+};
+
 const fetchAEMData = async () => {
   try {
-    const url = `http://localhost:4503/content/fashionstore/us/en/home.homedata`;
+    const AEM_URL = 'http://localhost:4503';
     const username = process.env.REACT_APP_AEM_USER || 'admin';
     const password = process.env.REACT_APP_AEM_PASS || 'admin';
     const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
+    const headers = { 'Authorization': auth };
 
-    console.log(`Fetching JSON from ${url}...`);
+    console.log(`Fetching Home page data...`);
+    const homeRes = await axios.get(`${AEM_URL}/content/fashionstore/us/en/home.model.json`, { headers });
+    
+    console.log(`Fetching Navigation (Infinity JSON) for sub-pages...`);
+    const infinityRes = await axios.get(`${AEM_URL}/content/fashionstore/us/en/home.infinity.json`, { headers });
 
-    const response = await axios.get(url, {
-      headers: { 'Authorization': auth }
-    });
-
-    const jsonData = response.data;
+    // Parse the infinity tree starting from /home
+    const fullNavTree = buildNavTree(infinityRes.data, '/content/fashionstore/us/en/home');
+    
+    // We construct the final JSON format that HomePage.js expects
+    const jsonData = {
+      ...homeRes.data,
+      // Create a root "Home" nav item that contains all the deep children
+      navigation: [
+        {
+          title: "Home",
+          url: "/content/fashionstore/us/en/home.html",
+          children: fullNavTree
+        }
+      ]
+    };
     
     // Download any images found in the JSON
     await processImages(jsonData, auth);
@@ -83,7 +120,7 @@ const fetchAEMData = async () => {
     }
     
     fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
-    console.log(`Successfully wrote AEM JSON data to ${filePath}`);
+    console.log(`Successfully wrote AEM JSON data to ${filePath} with DEEP SUB-PAGES!`);
     console.log(`🎉 100% Static Setup Complete! Vercel is ready.`);
   } catch (error) {
     console.error('Error fetching AEM data:', error.message);
