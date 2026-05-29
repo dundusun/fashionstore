@@ -139,10 +139,48 @@ function HomePage({ data }) {
         <section style={{ padding: '100px 60px', background: '#111', color: '#fff', textAlign: 'center' }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>{newsletter.title}</h2>
           <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '40px', maxWidth: '500px', margin: '0 auto 40px auto' }}>{newsletter.description}</p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '500px', margin: '0 auto' }}>
-            <input type="email" placeholder="Enter your email address" style={{ flex: 1, padding: '16px 24px', borderRadius: '50px', border: 'none', fontSize: '1rem', outline: 'none' }} />
-            <button style={{ padding: '16px 40px', borderRadius: '50px', border: 'none', background: '#fff', color: '#000', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textTransform: 'uppercase' }}>Subscribe</button>
-          </div>
+          
+          <form 
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const email = e.target.email.value;
+              const btn = e.target.submitBtn;
+              const originalText = btn.innerText;
+              
+              btn.innerText = 'Subscribing...';
+              btn.disabled = true;
+
+              try {
+                // Call our Vercel Serverless Backend!
+                const res = await fetch('/api/subscribe', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                  btn.innerText = 'Subscribed! ✓';
+                  btn.style.background = '#4CAF50';
+                  btn.style.color = '#fff';
+                  e.target.reset();
+                } else {
+                  alert(data.error);
+                  btn.innerText = originalText;
+                  btn.disabled = false;
+                }
+              } catch (err) {
+                alert('Something went wrong!');
+                btn.innerText = originalText;
+                btn.disabled = false;
+              }
+            }}
+            style={{ display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '500px', margin: '0 auto' }}
+          >
+            <input name="email" type="email" required placeholder="Enter your email address" style={{ flex: 1, padding: '16px 24px', borderRadius: '50px', border: 'none', fontSize: '1rem', outline: 'none' }} />
+            <button name="submitBtn" type="submit" style={{ padding: '16px 40px', borderRadius: '50px', border: 'none', background: '#fff', color: '#000', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease' }}>Subscribe</button>
+          </form>
         </section>
       )}
 
