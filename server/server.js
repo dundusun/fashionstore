@@ -24,6 +24,38 @@ app.get('/api/test', (req, res) => {
 
 // Import Models
 const Product = require('./models/Product');
+const Cart = require('./models/Cart');
+
+// API Endpoint to get user cart
+app.get('/api/cart/:email', async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ userEmail: req.params.email });
+    if (!cart) {
+      return res.json([]);
+    }
+    res.json(cart.items);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching cart", error: error.message });
+  }
+});
+
+// API Endpoint to save user cart
+app.post('/api/cart', async (req, res) => {
+  try {
+    const { email, items } = req.body;
+    
+    // Find and update, or create if doesn't exist (upsert)
+    const updatedCart = await Cart.findOneAndUpdate(
+      { userEmail: email },
+      { items: items, updatedAt: Date.now() },
+      { new: true, upsert: true }
+    );
+    
+    res.json(updatedCart.items);
+  } catch (error) {
+    res.status(500).json({ message: "Error saving cart", error: error.message });
+  }
+});
 
 // API Endpoint to get all products
 app.get('/api/products', async (req, res) => {
@@ -32,6 +64,19 @@ app.get('/api/products', async (req, res) => {
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error: error.message });
+  }
+});
+
+// API Endpoint to get a single product by ID
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching product", error: error.message });
   }
 });
 

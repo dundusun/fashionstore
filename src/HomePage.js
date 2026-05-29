@@ -1,183 +1,191 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
+import { useNavigate, Link } from 'react-router-dom';
+import { useCart } from './context/CartContext';
+import storeData from './data/storeData.json';
+import Footer from './Footer';
+import { API_URL } from './config';
 
 function HomePage({ data }) {
-  const [activeNav, setActiveNav] = useState(null);
   const [liveProducts, setLiveProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   React.useEffect(() => {
-    fetch('/api/products')
+    fetch(`${API_URL}/api/products`)
       .then(res => res.json())
       .then(data => {
+        if (!Array.isArray(data)) {
+          throw new Error("API did not return an array. Probably a backend error.");
+        }
         setLiveProducts(data);
         setLoadingProducts(false);
       })
       .catch(err => {
-        console.error("Error fetching live products:", err);
+        console.error("Error fetching live products, falling back to static data:", err);
+        const fallbackData = storeData.trendingProducts.map(p => ({
+          _id: p.id,
+          name: p.name,
+          price: parseFloat(p.price.replace('$', '')),
+          image: p.image,
+          category: 'Trending'
+        }));
+        setLiveProducts(fallbackData);
         setLoadingProducts(false);
       });
   }, []);
 
-  if (!data) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, sans-serif' }}>
-        <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>Loading Store Data...</p>
-      </div>
-    );
-  }
-
-  const hero = data.hero || {};
-  let navigation = data.navigation || [];
-  const pageTitle = data.pageTitle || 'Fashion Store';
-  const categories = data.featuredCategories || [];
-  const newsletter = data.newsletter || {};
-
-  const alignmentMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
-  const heroJustify = alignmentMap[hero.contentAlignment] || 'flex-start';
-  const heroTextAlign = hero.contentAlignment || 'left';
-  const heroImage = hero.imageSrc || 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&q=80';
+  const hero = {
+    title: data?.hero?.pretitle || "New Season Arrivals",
+    subtitle: data?.hero?.title || "Spring Summer 2026",
+    description: data?.hero?.description || "Embrace the new season with our latest collection of premium, sustainable fashion designed to make you stand out.",
+    ctaText: data?.hero?.ctaLabel || "Shop Collection",
+    imageSrc: data?.hero?.imageSrc || "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80"
+  };
 
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif", background: '#fafafa', minHeight: '100vh', color: '#111' }}>
-      
-      {/* ─── HEADER ─── */}
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
       <Navbar isTransparent={true} />
 
-      {/* ─── HERO ─── */}
-      <section style={{
-        position: 'relative', height: '90vh', display: 'flex', alignItems: 'center',
-        justifyContent: heroJustify, overflow: 'hidden', paddingTop: '70px',
-      }}>
-        <div style={{
-          position: 'absolute', inset: 0, backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover', backgroundPosition: 'center', zIndex: 0,
-        }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 1 }} />
-        
-        <div style={{
-          position: 'relative', zIndex: 2, padding: '0 80px',
-          maxWidth: '700px', textAlign: heroTextAlign, margin: hero.contentAlignment === 'center' ? '0 auto' : undefined,
-        }}>
-          {hero.pretitle && <p style={{ textTransform: 'uppercase', letterSpacing: '4px', fontSize: '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>{hero.pretitle}</p>}
-          <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 24px 0', color: '#fff' }}>{hero.title}</h1>
-          {hero.description && <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.9)', margin: '0 0 40px 0', maxWidth: '500px' }}>{hero.description}</p>}
-          <div style={{ display: 'flex', gap: '16px', justifyContent: heroTextAlign === 'center' ? 'center' : 'flex-start' }}>
-            {hero.ctaLabel && <Link to={hero.ctaUrl || '#'} style={primaryCtaStyle}>{hero.ctaLabel}</Link>}
-          </div>
+      {/* Hero Section */}
+      <div className="relative h-screen flex items-center justify-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={hero.imageSrc} 
+            alt="Hero Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-      </section>
 
-      {/* ─── FEATURED CATEGORIES ─── */}
-      {categories.length > 0 && (
-        <section style={{ padding: '80px 60px', background: '#fff' }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, textAlign: 'center', marginBottom: '50px', textTransform: 'uppercase', letterSpacing: '1px' }}>Shop by Category</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-            {categories.map((cat, i) => (
-              <Link to={cat.link} key={i} style={{ position: 'relative', height: '400px', borderRadius: '12px', overflow: 'hidden', display: 'block', textDecoration: 'none' }} className="cat-card">
-                <img src={cat.image} alt={cat.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} className="cat-img" />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' }} />
-                <h3 style={{ position: 'absolute', bottom: '30px', left: '30px', color: '#fff', fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{cat.title}</h3>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ─── LIVE PRODUCTS FROM MONGODB ─── */}
-      <section style={{ padding: '80px 60px', background: '#fafafa' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Latest Drops</h2>
-            <span style={{ background: '#4CAF50', color: '#fff', fontSize: '0.8rem', padding: '4px 8px', borderRadius: '4px', fontWeight: 700 }}>LIVE DB</span>
-          </div>
-          <Link to="/shop" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>View All</Link>
+        {/* Hero Content */}
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto mt-24">
+          <h2 className="text-sm md:text-lg font-bold tracking-[0.3em] uppercase text-white/80 mb-4 animate-fade-in-up" style={{ animationDelay: '0ms' }}>
+            {hero.title}
+          </h2>
+          <h1 className="text-6xl md:text-8xl font-black text-white leading-tight mb-6 tracking-tight drop-shadow-xl animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+            {hero.subtitle}
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto font-medium leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            {hero.description}
+          </p>
+          <button 
+            onClick={() => navigate('/shop')}
+            className="bg-white text-black px-10 py-4 rounded-full font-bold uppercase tracking-wider text-sm transition-all duration-300 hover:bg-black hover:text-white hover:scale-105 shadow-2xl animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
+          >
+            {hero.ctaText}
+          </button>
         </div>
-        
+      </div>
+
+      {/* Featured Categories Section */}
+      <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-black tracking-tight mb-4">Shop by Category</h2>
+          <p className="text-gray-500 font-medium max-w-2xl mx-auto">Explore our curated collections designed for every occasion.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {storeData.featuredCategories.map((cat, idx) => (
+            <div key={idx} onClick={() => navigate(cat.link || '/shop')} className="relative h-[500px] rounded-3xl overflow-hidden group cursor-pointer shadow-xl">
+              <img src={cat.image} alt={cat.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              <div className="absolute bottom-8 left-8 right-8">
+                <h3 className="text-3xl font-black text-white mb-2">{cat.title}</h3>
+                <span className="inline-block bg-white text-black px-6 py-2 rounded-full font-bold text-sm uppercase tracking-wider group-hover:bg-black group-hover:text-white transition-colors">
+                  Explore →
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Trending Products Section */}
+      <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="flex justify-between items-end mb-12">
+          <div>
+            <h2 className="text-4xl font-black tracking-tight mb-2">Trending Now</h2>
+            <p className="text-gray-500 font-medium">Discover our most popular premium pieces</p>
+          </div>
+          <button onClick={() => navigate('/shop')} className="hidden md:block font-bold uppercase tracking-wider text-sm border-b-2 border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-colors">
+            View All →
+          </button>
+        </div>
+
         {loadingProducts ? (
-          <div style={{ textAlign: 'center', padding: '50px 0', fontSize: '1.2rem', color: '#666' }}>Fetching from MongoDB... ⏳</div>
-        ) : liveProducts.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '50px 0', color: '#999' }}>No products found in database.</div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+          </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px' }}>
-            {liveProducts.map(prod => (
-              <div key={prod._id} style={{ cursor: 'pointer' }} className="product-card">
-                <div style={{ position: 'relative', height: '380px', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px', background: '#eee' }}>
-                  <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} className="prod-img" />
-                  <span style={{ position: 'absolute', top: '16px', left: '16px', background: '#000', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {liveProducts.slice(0, 4).map(prod => (
+              <div key={prod._id} className="group cursor-pointer" onClick={() => navigate('/product/' + prod._id)}>
+                <div className="relative h-[450px] overflow-hidden rounded-2xl bg-gray-100 mb-4">
+                  <img 
+                    src={prod.image} 
+                    alt={prod.name} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  />
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider">
                     {prod.category}
-                  </span>
-                  <div className="add-to-cart" style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', background: '#fff', color: '#000', textAlign: 'center', padding: '12px', fontWeight: 700, borderRadius: '6px', opacity: 0, transform: 'translateY(10px)', transition: 'all 0.3s ease' }}>
-                    Quick Add +
+                  </div>
+                  
+                  {/* Glassmorphism Add to Cart Button */}
+                  <div className="absolute bottom-4 left-4 right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); addToCart(prod); }}
+                      className="w-full bg-white/80 backdrop-blur-md hover:bg-black hover:text-white text-black font-bold py-4 rounded-xl transition-colors shadow-lg"
+                    >
+                      Add to Cart 🛒
+                    </button>
                   </div>
                 </div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 8px 0', color: '#222' }}>{prod.name}</h3>
-                <p style={{ fontSize: '1rem', fontWeight: 700, color: '#000', margin: 0 }}>${prod.price.toFixed(2)}</p>
+                <h3 className="font-bold text-lg text-gray-900 mb-1">{prod.name}</h3>
+                <p className="font-bold text-gray-500">${prod.price.toFixed(2)}</p>
               </div>
             ))}
           </div>
         )}
-      </section>
+      </div>
 
-      {/* ─── NEWSLETTER ─── */}
-      {newsletter.title && (
-        <section style={{ padding: '100px 60px', background: '#111', color: '#fff', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>{newsletter.title}</h2>
-          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '40px', maxWidth: '500px', margin: '0 auto 40px auto' }}>{newsletter.description}</p>
-          
-          <form 
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const email = e.target.email.value;
-              const btn = e.target.submitBtn;
-              const originalText = btn.innerText;
-              
-              btn.innerText = 'Subscribing...';
-              btn.disabled = true;
+      {/* Promotional Parallax Banner */}
+      <div className="relative h-[60vh] flex items-center justify-center bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&q=80')" }}>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10 text-center text-white px-6">
+          <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">Summer Essentials</h2>
+          <p className="text-xl md:text-2xl mb-10 font-medium max-w-2xl mx-auto opacity-90">Discover the pieces you'll wear on repeat all season long.</p>
+          <button onClick={() => navigate('/shop')} className="bg-white text-black px-12 py-4 rounded-full font-bold uppercase tracking-wider text-sm transition-transform hover:scale-105 shadow-2xl">
+            Shop The Edit
+          </button>
+        </div>
+      </div>
 
-              try {
-                // Mocking the backend response since we removed Vercel/Netlify functions
-                await new Promise(resolve => setTimeout(resolve, 800));
-                
-                btn.innerText = 'Subscribed! ✓';
-                btn.style.background = '#4CAF50';
-                btn.style.color = '#fff';
-                e.target.reset();
-              } catch (err) {
-                alert('Something went wrong!');
-                btn.innerText = originalText;
-                btn.disabled = false;
-              }
-            }}
-            style={{ display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '500px', margin: '0 auto' }}
-          >
-            <input name="email" type="email" required placeholder="Enter your email address" style={{ flex: 1, padding: '16px 24px', borderRadius: '50px', border: 'none', fontSize: '1rem', outline: 'none' }} />
-            <button name="submitBtn" type="submit" style={{ padding: '16px 40px', borderRadius: '50px', border: 'none', background: '#fff', color: '#000', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textTransform: 'uppercase', transition: 'all 0.3s ease' }}>Subscribe</button>
+      {/* Newsletter Section */}
+      <div className="bg-white py-24 px-6 border-b border-gray-200">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="text-sm font-bold tracking-[0.2em] uppercase text-gray-400 mb-4 block">Stay Updated</span>
+          <h2 className="text-4xl md:text-5xl font-black mb-6">{storeData.newsletter.title}</h2>
+          <p className="text-gray-500 text-lg mb-10 max-w-2xl mx-auto">{storeData.newsletter.description}</p>
+          <form className="flex flex-col sm:flex-row gap-4 justify-center" onSubmit={(e) => { e.preventDefault(); alert('Thanks for subscribing!'); }}>
+            <input 
+              type="email" 
+              placeholder="Enter your email address" 
+              className="px-6 py-4 w-full sm:w-96 rounded-full bg-gray-100 border-none focus:ring-2 focus:ring-black outline-none transition-all"
+              required
+            />
+            <button type="submit" className="bg-black text-white px-10 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors shadow-lg">
+              Subscribe
+            </button>
           </form>
-        </section>
-      )}
+        </div>
+      </div>
 
-      {/* ─── FOOTER ─── */}
-      <footer style={{ padding: '40px 60px', background: '#000', color: 'rgba(255,255,255,0.5)', textAlign: 'center', fontSize: '0.9rem' }}>
-        <p>© 2026 {pageTitle}. All rights reserved. Zero-Cost Architecture.</p>
-      </footer>
-
-      {/* ─── STYLES ─── */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
-        body { margin: 0; }
-        
-        .cat-card:hover .cat-img { transform: scale(1.05); }
-        .product-card:hover .prod-img { transform: scale(1.05); }
-        .product-card:hover .add-to-cart { opacity: 1; transform: translateY(0); }
-      `}</style>
+      <Footer />
     </div>
   );
 }
-
-const iconBtnStyle = { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.3rem', color: '#000' };
-const primaryCtaStyle = { display: 'inline-block', padding: '16px 40px', background: '#fff', color: '#000', textDecoration: 'none', fontWeight: 800, fontSize: '0.9rem', letterSpacing: '1px', textTransform: 'uppercase', borderRadius: '50px', transition: 'all 0.3s ease' };
 
 export default HomePage;
