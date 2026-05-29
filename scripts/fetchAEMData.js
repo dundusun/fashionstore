@@ -16,7 +16,8 @@ if (fs.existsSync(envPath)) {
 
 const fetchAEMData = async () => {
   try {
-    const url = `${process.env.REACT_APP_AEM_URL}/content/fashionstore/us/en/home.homedata`;
+    // We can just hit localhost:4502 directly since this script runs locally! No ngrok needed.
+    const url = `http://localhost:4502/content/fashionstore/us/en/home.homedata`;
     const username = process.env.REACT_APP_AEM_USER || 'admin';
     const password = process.env.REACT_APP_AEM_PASS || 'admin';
     const auth = Buffer.from(`${username}:${password}`).toString('base64');
