@@ -9,10 +9,18 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`/content/fashionstore/us/en/home.homedata`, {
+    // In production (Vercel): /api/homepage serverless function handles auth
+    // In development: setupProxy.js forwards to localhost:4502
+    const url = process.env.NODE_ENV === "production"
+      ? "/api/homepage"
+      : "/content/fashionstore/us/en/home.homedata";
+
+    axios.get(url, {
       headers: {
-        "Authorization": "Basic " + btoa("admin:admin"),
-        "ngrok-skip-browser-warning": "true",
+        // Only needed locally (proxy doesn't forward in production)
+        ...(process.env.NODE_ENV !== "production" && {
+          "Authorization": "Basic " + btoa("admin:admin"),
+        }),
       },
     })
       .then((res) => {
