@@ -1,41 +1,75 @@
 {
-  "pageTitle": "Home",
-  "pageDescription": "",
+  "pageTitle": "Dundusun",
+  "pageDescription": "Discover the latest trends in fashion. Premium quality clothing for everyone.",
   "hero": {
-    "pretitle": "Hero banner",
-    "title": "Home",
-    "description": "",
-    "contentAlignment": "center",
-    "imageSrc": "/images/dam/casual-linen-top.jpg",
-    "ctaLabel": "Men",
-    "ctaUrl": "/content/fashionstore/us/en/home/men"
+    "pretitle": "New Season Arrivals",
+    "title": "Spring Summer 2026",
+    "description": "Embrace the new season with our latest collection of premium, sustainable fashion designed to make you stand out.",
+    "contentAlignment": "left",
+    "imageSrc": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80",
+    "ctaLabel": "Shop Collection",
+    "ctaUrl": "/collection"
   },
   "navigation": [
     {
       "title": "Home",
-      "url": "/content/fashionstore/us/en/home.html",
+      "url": "/",
       "children": [
-        {
-          "title": "Men",
-          "url": "/content/fashionstore/us/en/home/men.html"
-        },
-        {
-          "title": "Women",
-          "url": "/content/fashionstore/us/en/home/women.html"
-        },
-        {
-          "title": "Kids",
-          "url": "/content/fashionstore/us/en/home/kids.html"
-        },
-        {
-          "title": "New Arrivals",
-          "url": "/content/fashionstore/us/en/home/new-arrivals.html"
-        },
-        {
-          "title": "Sale",
-          "url": "/content/fashionstore/us/en/home/sale.html"
-        }
+        { "title": "Men", "url": "/men" },
+        { "title": "Women", "url": "/women" },
+        { "title": "Kids", "url": "/kids" },
+        { "title": "Accessories", "url": "/accessories" },
+        { "title": "Sale", "url": "/sale" }
       ]
     }
-  ]
+  ],
+  "featuredCategories": [
+    {
+      "title": "Women's Fashion",
+      "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80",
+      "link": "/women"
+    },
+    {
+      "title": "Men's Collection",
+      "image": "https://images.unsplash.com/photo-1516826957135-700ede19c6ce?w=800&q=80",
+      "link": "/men"
+    },
+    {
+      "title": "Kids & Baby",
+      "image": "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=800&q=80",
+      "link": "/kids"
+    }
+  ],
+  "trendingProducts": [
+    {
+      "id": "p1",
+      "name": "Classic Linen Blazer",
+      "price": "$129.00",
+      "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+      "badge": "New"
+    },
+    {
+      "id": "p2",
+      "name": "Silk Evening Dress",
+      "price": "$189.00",
+      "image": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80"
+    },
+    {
+      "id": "p3",
+      "name": "Casual Cotton T-Shirt",
+      "price": "$34.00",
+      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+      "badge": "Bestseller"
+    },
+    {
+      "id": "p4",
+      "name": "Leather Crossbody Bag",
+      "price": "$89.00",
+      "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80"
+    }
+  ],
+  "newsletter": {
+    "title": "Join Our VIP Club",
+    "description": "Subscribe to get 15% off your first order and exclusive access to new drops."
+  }
 }

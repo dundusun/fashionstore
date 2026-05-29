@@ -1,34 +1,8 @@
 import React, { useState } from 'react';
 
-/**
- * HomePage — consumes the flat JSON exported by HomePageModel Sling Model.
- *
- * Expected shape from /content/fashionstore/us/en/home.model.json:
- * {
- *   pageTitle: "Home",
- *   pageDescription: "...",
- *   hero: {
- *     pretitle: "New Collection",
- *     title: "Summer 2025",
- *     description: "...",
- *     contentAlignment: "left" | "center" | "right",
- *     imageSrc: "/content/dam/fashionstore/hero.jpg",
- *     ctaLabel: "Shop Now",
- *     ctaUrl: "/content/fashionstore/us/en/women.html"
- *   },
- *   navigation: [
- *     { title: "Women", url: "/content/fashionstore/us/en/women.html", children: [...] },
- *     ...
- *   ]
- * }
- */
-
-const BASE_URL = process.env.REACT_APP_AEM_BASE_URL || "";
-
 function HomePage({ data }) {
   const [activeNav, setActiveNav] = useState(null);
 
-  // ── Guard ────────────────────────────────────────────────────────────────────
   if (!data) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, sans-serif' }}>
@@ -37,14 +11,13 @@ function HomePage({ data }) {
     );
   }
 
-  // ── Extract from flat HomePageModel JSON ─────────────────────────────────────
-  const hero       = data.hero       || {};
-  let navigation   = data.navigation || [];
-  const pageTitle  = data.pageTitle  || 'Fashion Store';
+  const hero = data.hero || {};
+  let navigation = data.navigation || [];
+  const pageTitle = data.pageTitle || 'Fashion Store';
+  const categories = data.featuredCategories || [];
+  const products = data.trendingProducts || [];
+  const newsletter = data.newsletter || {};
 
-  // In AEM, the Navigation component often returns the root page ("Home") 
-  // as the single top-level item, and all actual menu pages (Men, Women, etc.) as its children.
-  // We can flatten this so they all display horizontally in the React header.
   if (navigation.length === 1 && navigation[0].children && navigation[0].children.length > 0) {
     navigation = [
       { title: navigation[0].title, url: navigation[0].url },
@@ -52,272 +25,147 @@ function HomePage({ data }) {
     ];
   }
 
-  // Alignment → CSS justify-content mapping for hero content
-  const alignmentMap = {
-    left:   'flex-start',
-    center: 'center',
-    right:  'flex-end',
-  };
+  const alignmentMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
   const heroJustify = alignmentMap[hero.contentAlignment] || 'flex-start';
   const heroTextAlign = hero.contentAlignment || 'left';
-
   const heroImage = hero.imageSrc || 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&q=80';
 
-  // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif", background: '#0a0a0a', minHeight: '100vh', color: '#fff' }}>
-
-      {/* ─── HEADER ─────────────────────────────────────────────────────────── */}
+    <div style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif", background: '#fafafa', minHeight: '100vh', color: '#111' }}>
+      
+      {/* ─── HEADER ─── */}
       <header style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0,
-        zIndex: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 60px',
-        height: '70px',
-        background: 'rgba(10,10,10,0.85)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 60px', height: '70px',
+        background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(0,0,0,0.05)',
       }}>
-        {/* Logo */}
-        <div style={{ fontSize: '1.2rem', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase', color: '#fff' }}>
+        <div style={{ fontSize: '1.4rem', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase', color: '#000' }}>
           {pageTitle}
         </div>
-
-        {/* Nav */}
         <nav>
-          {navigation.length > 0 ? (
-            <ul style={{ display: 'flex', listStyle: 'none', margin: 0, padding: 0, gap: '8px' }}>
-              {navigation.map((item, idx) => (
-                <li
-                  key={idx}
-                  style={{ position: 'relative' }}
-                  onMouseEnter={() => setActiveNav(idx)}
-                  onMouseLeave={() => setActiveNav(null)}
-                >
-                  <a
-                    href={item.url || '#'}
-                    style={{
-                      color: activeNav === idx ? '#fff' : 'rgba(255,255,255,0.75)',
-                      textDecoration: 'none',
-                      fontWeight: 500,
-                      fontSize: '0.9rem',
-                      letterSpacing: '0.5px',
-                      padding: '6px 16px',
-                      borderRadius: '6px',
-                      display: 'block',
-                      transition: 'all 0.2s ease',
-                      background: activeNav === idx ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    }}
-                  >
-                    {item.title}
-                    {item.children && item.children.length > 0 && (
-                      <span style={{ marginLeft: '4px', fontSize: '0.65rem', opacity: 0.7 }}>▾</span>
-                    )}
-                  </a>
-
-                  {/* Dropdown */}
-                  {item.children && item.children.length > 0 && activeNav === idx && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      minWidth: '180px',
-                      background: 'rgba(20,20,20,0.97)',
-                      backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px',
-                      padding: '8px 0',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-                      animation: 'fadeIn 0.15s ease',
-                    }}>
-                      {item.children.map((child, cIdx) => (
-                        <a
-                          key={cIdx}
-                          href={child.url || '#'}
-                          style={{
-                            display: 'block',
-                            color: 'rgba(255,255,255,0.75)',
-                            textDecoration: 'none',
-                            padding: '10px 20px',
-                            fontSize: '0.875rem',
-                            transition: 'all 0.15s ease',
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.color = '#fff';
-                            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.color = 'rgba(255,255,255,0.75)';
-                            e.currentTarget.style.background = 'transparent';
-                          }}
-                        >
-                          {child.title}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>Loading nav…</span>
-          )}
+          <ul style={{ display: 'flex', listStyle: 'none', margin: 0, padding: 0, gap: '24px' }}>
+            {navigation.map((item, idx) => (
+              <li key={idx} style={{ position: 'relative' }} onMouseEnter={() => setActiveNav(idx)} onMouseLeave={() => setActiveNav(null)}>
+                <a href={item.url || '#'} style={{
+                  color: '#000', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem',
+                  textTransform: 'uppercase', letterSpacing: '1px', transition: 'color 0.2s ease'
+                }}>
+                  {item.title}
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
-
-        {/* Right icons (static) */}
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <button style={iconBtnStyle} aria-label="Search">🔍</button>
-          <button style={iconBtnStyle} aria-label="Cart">🛍️</button>
+          <button style={iconBtnStyle}>🔍</button>
+          <button style={iconBtnStyle}>🛍️</button>
         </div>
       </header>
 
-      {/* ─── HERO ───────────────────────────────────────────────────────────── */}
+      {/* ─── HERO ─── */}
       <section style={{
-        position: 'relative',
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: heroJustify,
-        overflow: 'hidden',
-        paddingTop: '70px',
+        position: 'relative', height: '90vh', display: 'flex', alignItems: 'center',
+        justifyContent: heroJustify, overflow: 'hidden', paddingTop: '70px',
       }}>
-        {/* Background Image */}
         <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          zIndex: 0,
-          transition: 'opacity 0.5s ease',
+          position: 'absolute', inset: 0, backgroundImage: `url(${heroImage})`,
+          backgroundSize: 'cover', backgroundPosition: 'center', zIndex: 0,
         }} />
-
-        {/* Overlay gradient */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 1 }} />
+        
         <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: hero.contentAlignment === 'center'
-            ? 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)'
-            : 'linear-gradient(to right, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)',
-          zIndex: 1,
-        }} />
-
-        {/* Hero Content */}
-        <div style={{
-          position: 'relative',
-          zIndex: 2,
-          padding: '0 80px',
-          maxWidth: hero.contentAlignment === 'center' ? '700px' : '600px',
-          textAlign: heroTextAlign,
-          margin: hero.contentAlignment === 'center' ? '0 auto' : undefined,
+          position: 'relative', zIndex: 2, padding: '0 80px',
+          maxWidth: '700px', textAlign: heroTextAlign, margin: hero.contentAlignment === 'center' ? '0 auto' : undefined,
         }}>
-          {hero.pretitle && (
-            <p style={{
-              textTransform: 'uppercase',
-              letterSpacing: '4px',
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              color: 'rgba(255,255,255,0.7)',
-              marginBottom: '16px',
-              margin: '0 0 16px 0',
-            }}>
-              {hero.pretitle}
-            </p>
-          )}
-
-          <h1 style={{
-            fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
-            fontWeight: 900,
-            lineHeight: 1.05,
-            margin: '0 0 24px 0',
-            letterSpacing: '-1px',
-            textShadow: '0 4px 20px rgba(0,0,0,0.4)',
-          }}>
-            {hero.title || pageTitle}
-          </h1>
-
-          {hero.description && (
-            <p style={{
-              fontSize: '1.05rem',
-              lineHeight: 1.7,
-              color: 'rgba(255,255,255,0.8)',
-              margin: '0 0 36px 0',
-              maxWidth: '480px',
-            }}>
-              {hero.description}
-            </p>
-          )}
-
-          {/* CTA Buttons */}
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: hero.contentAlignment === 'center' ? 'center' : 'flex-start' }}>
-            {hero.ctaLabel && (
-              <a href={hero.ctaUrl || '#'} style={primaryCtaStyle}>
-                {hero.ctaLabel}
-              </a>
-            )}
-            <a href="#collections" style={secondaryCtaStyle}>
-              Explore Collections
-            </a>
+          {hero.pretitle && <p style={{ textTransform: 'uppercase', letterSpacing: '4px', fontSize: '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>{hero.pretitle}</p>}
+          <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 24px 0', color: '#fff' }}>{hero.title}</h1>
+          {hero.description && <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.9)', margin: '0 0 40px 0', maxWidth: '500px' }}>{hero.description}</p>}
+          <div style={{ display: 'flex', gap: '16px', justifyContent: heroTextAlign === 'center' ? 'center' : 'flex-start' }}>
+            {hero.ctaLabel && <a href={hero.ctaUrl || '#'} style={primaryCtaStyle}>{hero.ctaLabel}</a>}
           </div>
         </div>
       </section>
 
-      {/* ─── GLOBAL STYLES (keyframes) ──────────────────────────────────────── */}
+      {/* ─── FEATURED CATEGORIES ─── */}
+      {categories.length > 0 && (
+        <section style={{ padding: '80px 60px', background: '#fff' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800, textAlign: 'center', marginBottom: '50px', textTransform: 'uppercase', letterSpacing: '1px' }}>Shop by Category</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+            {categories.map((cat, i) => (
+              <a href={cat.link} key={i} style={{ position: 'relative', height: '400px', borderRadius: '12px', overflow: 'hidden', display: 'block', textDecoration: 'none' }} className="cat-card">
+                <img src={cat.image} alt={cat.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} className="cat-img" />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' }} />
+                <h3 style={{ position: 'absolute', bottom: '30px', left: '30px', color: '#fff', fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{cat.title}</h3>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ─── TRENDING PRODUCTS ─── */}
+      {products.length > 0 && (
+        <section style={{ padding: '80px 60px', background: '#fafafa' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Trending Now</h2>
+            <a href="/shop" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>View All</a>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px' }}>
+            {products.map(prod => (
+              <div key={prod.id} style={{ cursor: 'pointer' }} className="product-card">
+                <div style={{ position: 'relative', height: '380px', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px', background: '#eee' }}>
+                  <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} className="prod-img" />
+                  {prod.badge && (
+                    <span style={{ position: 'absolute', top: '16px', left: '16px', background: '#000', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                      {prod.badge}
+                    </span>
+                  )}
+                  <div className="add-to-cart" style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', background: '#fff', color: '#000', textAlign: 'center', padding: '12px', fontWeight: 700, borderRadius: '6px', opacity: 0, transform: 'translateY(10px)', transition: 'all 0.3s ease' }}>
+                    Quick Add +
+                  </div>
+                </div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 8px 0', color: '#222' }}>{prod.name}</h3>
+                <p style={{ fontSize: '1rem', fontWeight: 700, color: '#000', margin: 0 }}>{prod.price}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ─── NEWSLETTER ─── */}
+      {newsletter.title && (
+        <section style={{ padding: '100px 60px', background: '#111', color: '#fff', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>{newsletter.title}</h2>
+          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '40px', maxWidth: '500px', margin: '0 auto 40px auto' }}>{newsletter.description}</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '500px', margin: '0 auto' }}>
+            <input type="email" placeholder="Enter your email address" style={{ flex: 1, padding: '16px 24px', borderRadius: '50px', border: 'none', fontSize: '1rem', outline: 'none' }} />
+            <button style={{ padding: '16px 40px', borderRadius: '50px', border: 'none', background: '#fff', color: '#000', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', textTransform: 'uppercase' }}>Subscribe</button>
+          </div>
+        </section>
+      )}
+
+      {/* ─── FOOTER ─── */}
+      <footer style={{ padding: '40px 60px', background: '#000', color: 'rgba(255,255,255,0.5)', textAlign: 'center', fontSize: '0.9rem' }}>
+        <p>© 2026 {pageTitle}. All rights reserved. Zero-Cost Architecture.</p>
+      </footer>
+
+      {/* ─── STYLES ─── */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { box-sizing: border-box; }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+        body { margin: 0; }
+        
+        .cat-card:hover .cat-img { transform: scale(1.05); }
+        .product-card:hover .prod-img { transform: scale(1.05); }
+        .product-card:hover .add-to-cart { opacity: 1; transform: translateY(0); }
       `}</style>
     </div>
   );
 }
 
-// ── Style constants ────────────────────────────────────────────────────────────
-
-const iconBtnStyle = {
-  background: 'transparent',
-  border: 'none',
-  cursor: 'pointer',
-  fontSize: '1.1rem',
-  padding: '4px',
-  opacity: 0.8,
-  transition: 'opacity 0.2s',
-};
-
-const primaryCtaStyle = {
-  display: 'inline-block',
-  padding: '14px 36px',
-  background: '#fff',
-  color: '#000',
-  textDecoration: 'none',
-  fontWeight: 700,
-  fontSize: '0.9rem',
-  letterSpacing: '1px',
-  textTransform: 'uppercase',
-  borderRadius: '50px',
-  transition: 'all 0.3s ease',
-  boxShadow: '0 8px 30px rgba(255,255,255,0.25)',
-};
-
-const secondaryCtaStyle = {
-  display: 'inline-block',
-  padding: '14px 36px',
-  background: 'transparent',
-  color: '#fff',
-  border: '2px solid rgba(255,255,255,0.6)',
-  textDecoration: 'none',
-  fontWeight: 600,
-  fontSize: '0.9rem',
-  letterSpacing: '1px',
-  textTransform: 'uppercase',
-  borderRadius: '50px',
-  transition: 'all 0.3s ease',
-};
+const iconBtnStyle = { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.3rem', color: '#000' };
+const primaryCtaStyle = { display: 'inline-block', padding: '16px 40px', background: '#fff', color: '#000', textDecoration: 'none', fontWeight: 800, fontSize: '0.9rem', letterSpacing: '1px', textTransform: 'uppercase', borderRadius: '50px', transition: 'all 0.3s ease' };
 
 export default HomePage;
