@@ -30,10 +30,10 @@ const processImages = async (obj, authHeader) => {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      // Download image from AEM (localhost:4502)
+      // Download image from AEM Publish (localhost:4503)
       try {
         console.log(`Downloading image: ${aemImagePath}...`);
-        const imgResponse = await axios.get(`http://localhost:4502${aemImagePath}`, {
+        const imgResponse = await axios.get(`http://localhost:4503${aemImagePath}`, {
           responseType: 'stream',
           headers: { 'Authorization': authHeader }
         });
@@ -60,7 +60,7 @@ const processImages = async (obj, authHeader) => {
 
 const fetchAEMData = async () => {
   try {
-    const url = `http://localhost:4502/content/fashionstore/us/en/home.homedata`;
+    const url = `http://localhost:4503/content/fashionstore/us/en/home.homedata`;
     const username = process.env.REACT_APP_AEM_USER || 'admin';
     const password = process.env.REACT_APP_AEM_PASS || 'admin';
     const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
