@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function HomePage({ data }) {
   const [activeNav, setActiveNav] = useState(null);
@@ -6,7 +7,7 @@ function HomePage({ data }) {
   if (!data) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, sans-serif' }}>
-        <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>No page data received from AEM.</p>
+        <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>Loading Store Data...</p>
       </div>
     );
   }
@@ -17,13 +18,6 @@ function HomePage({ data }) {
   const categories = data.featuredCategories || [];
   const products = data.trendingProducts || [];
   const newsletter = data.newsletter || {};
-
-  if (navigation.length === 1 && navigation[0].children && navigation[0].children.length > 0) {
-    navigation = [
-      { title: navigation[0].title, url: navigation[0].url },
-      ...navigation[0].children
-    ];
-  }
 
   const alignmentMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
   const heroJustify = alignmentMap[hero.contentAlignment] || 'flex-start';
@@ -42,18 +36,41 @@ function HomePage({ data }) {
         borderBottom: '1px solid rgba(0,0,0,0.05)',
       }}>
         <div style={{ fontSize: '1.4rem', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase', color: '#000' }}>
-          {pageTitle}
+          <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>{pageTitle}</Link>
         </div>
         <nav>
           <ul style={{ display: 'flex', listStyle: 'none', margin: 0, padding: 0, gap: '24px' }}>
             {navigation.map((item, idx) => (
               <li key={idx} style={{ position: 'relative' }} onMouseEnter={() => setActiveNav(idx)} onMouseLeave={() => setActiveNav(null)}>
-                <a href={item.url || '#'} style={{
+                <Link to={item.url || '#'} style={{
                   color: '#000', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem',
-                  textTransform: 'uppercase', letterSpacing: '1px', transition: 'color 0.2s ease'
+                  textTransform: 'uppercase', letterSpacing: '1px', transition: 'color 0.2s ease',
+                  padding: '24px 0'
                 }}>
-                  {item.title}
-                </a>
+                  {item.title} {item.children && '▾'}
+                </Link>
+                
+                {/* Dropdown Menu */}
+                {item.children && activeNav === idx && (
+                  <div style={{
+                    position: 'absolute', top: '100%', left: 0, marginTop: '20px',
+                    background: '#fff', minWidth: '200px', padding: '10px 0',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)', borderRadius: '8px',
+                    animation: 'fadeIn 0.2s ease'
+                  }}>
+                    {item.children.map((child, cIdx) => (
+                      <Link key={cIdx} to={child.url} style={{
+                        display: 'block', padding: '10px 20px', color: '#333',
+                        textDecoration: 'none', fontSize: '0.9rem', transition: 'background 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                      >
+                        {child.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -83,7 +100,7 @@ function HomePage({ data }) {
           <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 24px 0', color: '#fff' }}>{hero.title}</h1>
           {hero.description && <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.9)', margin: '0 0 40px 0', maxWidth: '500px' }}>{hero.description}</p>}
           <div style={{ display: 'flex', gap: '16px', justifyContent: heroTextAlign === 'center' ? 'center' : 'flex-start' }}>
-            {hero.ctaLabel && <a href={hero.ctaUrl || '#'} style={primaryCtaStyle}>{hero.ctaLabel}</a>}
+            {hero.ctaLabel && <Link to={hero.ctaUrl || '#'} style={primaryCtaStyle}>{hero.ctaLabel}</Link>}
           </div>
         </div>
       </section>
@@ -94,11 +111,11 @@ function HomePage({ data }) {
           <h2 style={{ fontSize: '2rem', fontWeight: 800, textAlign: 'center', marginBottom: '50px', textTransform: 'uppercase', letterSpacing: '1px' }}>Shop by Category</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
             {categories.map((cat, i) => (
-              <a href={cat.link} key={i} style={{ position: 'relative', height: '400px', borderRadius: '12px', overflow: 'hidden', display: 'block', textDecoration: 'none' }} className="cat-card">
+              <Link to={cat.link} key={i} style={{ position: 'relative', height: '400px', borderRadius: '12px', overflow: 'hidden', display: 'block', textDecoration: 'none' }} className="cat-card">
                 <img src={cat.image} alt={cat.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} className="cat-img" />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' }} />
                 <h3 style={{ position: 'absolute', bottom: '30px', left: '30px', color: '#fff', fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{cat.title}</h3>
-              </a>
+              </Link>
             ))}
           </div>
         </section>
@@ -109,7 +126,7 @@ function HomePage({ data }) {
         <section style={{ padding: '80px 60px', background: '#fafafa' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
             <h2 style={{ fontSize: '2rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Trending Now</h2>
-            <a href="/shop" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>View All</a>
+            <Link to="/shop" style={{ color: '#000', fontWeight: 600, textDecoration: 'underline' }}>View All</Link>
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px' }}>

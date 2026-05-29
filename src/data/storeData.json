@@ -1,0 +1,99 @@
+{
+  "pageTitle": "Dundusun",
+  "hero": {
+    "pretitle": "New Season Arrivals",
+    "title": "Spring Summer 2026",
+    "description": "Embrace the new season with our latest collection of premium, sustainable fashion designed to make you stand out.",
+    "contentAlignment": "left",
+    "imageSrc": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80",
+    "ctaLabel": "Shop Collection",
+    "ctaUrl": "/collection"
+  },
+  "navigation": [
+    {
+      "title": "Men",
+      "url": "/men",
+      "children": [
+        { "title": "Clothing", "url": "/men/clothing" },
+        { "title": "Shoes", "url": "/men/shoes" },
+        { "title": "Accessories", "url": "/men/accessories" }
+      ]
+    },
+    {
+      "title": "Women",
+      "url": "/women",
+      "children": [
+        { "title": "Clothing", "url": "/women/clothing" },
+        { "title": "Shoes", "url": "/women/shoes" },
+        { "title": "Accessories", "url": "/women/accessories" },
+        { "title": "Ethnic Wear", "url": "/women/ethnic-wear" }
+      ]
+    },
+    {
+      "title": "Kids",
+      "url": "/kids",
+      "children": [
+        { "title": "Boys", "url": "/kids/boys" },
+        { "title": "Girls", "url": "/kids/girls" },
+        { "title": "Infant", "url": "/kids/infant" }
+      ]
+    },
+    {
+      "title": "Sale",
+      "url": "/sale",
+      "children": [
+        { "title": "Clearance", "url": "/sale/clearance" },
+        { "title": "Under $50", "url": "/sale/under-50" }
+      ]
+    }
+  ],
+  "featuredCategories": [
+    {
+      "title": "Women's Fashion",
+      "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80",
+      "link": "/women"
+    },
+    {
+      "title": "Men's Collection",
+      "image": "https://images.unsplash.com/photo-1516826957135-700ede19c6ce?w=800&q=80",
+      "link": "/men"
+    },
+    {
+      "title": "Kids & Baby",
+      "image": "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=800&q=80",
+      "link": "/kids"
+    }
+  ],
+  "trendingProducts": [
+    {
+      "id": "p1",
+      "name": "Classic Linen Blazer",
+      "price": "$129.00",
+      "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+      "badge": "New"
+    },
+    {
+      "id": "p2",
+      "name": "Silk Evening Dress",
+      "price": "$189.00",
+      "image": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80"
+    },
+    {
+      "id": "p3",
+      "name": "Casual Cotton T-Shirt",
+      "price": "$34.00",
+      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+      "badge": "Bestseller"
+    },
+    {
+      "id": "p4",
+      "name": "Leather Crossbody Bag",
+      "price": "$89.00",
+      "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80"
+    }
+  ],
+  "newsletter": {
+    "title": "Join Our VIP Club",
+    "description": "Subscribe to get 15% off your first order and exclusive access to new drops."
+  }
+}
