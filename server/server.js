@@ -22,9 +22,18 @@ app.get('/api/test', (req, res) => {
   res.json({ message: "Backend is running and connected to MongoDB!" });
 });
 
-// Import Routes (We will create these later)
-// const productRoutes = require('./routes/products');
-// app.use('/api/products', productRoutes);
+// Import Models
+const Product = require('./models/Product');
+
+// API Endpoint to get all products
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching products", error: error.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

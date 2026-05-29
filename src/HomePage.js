@@ -3,21 +3,6 @@ import { Link } from 'react-router-dom';
 
 function HomePage({ data }) {
   const [activeNav, setActiveNav] = useState(null);
-
-  if (!data) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, sans-serif' }}>
-        <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>Loading Store Data...</p>
-      </div>
-    );
-  }
-
-  const hero = data.hero || {};
-  let navigation = data.navigation || [];
-  const pageTitle = data.pageTitle || 'Fashion Store';
-  const categories = data.featuredCategories || [];
-  const newsletter = data.newsletter || {};
-
   const [liveProducts, setLiveProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
 
@@ -33,6 +18,20 @@ function HomePage({ data }) {
         setLoadingProducts(false);
       });
   }, []);
+
+  if (!data) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, sans-serif' }}>
+        <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>Loading Store Data...</p>
+      </div>
+    );
+  }
+
+  const hero = data.hero || {};
+  let navigation = data.navigation || [];
+  const pageTitle = data.pageTitle || 'Fashion Store';
+  const categories = data.featuredCategories || [];
+  const newsletter = data.newsletter || {};
 
   const alignmentMap = { left: 'flex-start', center: 'center', right: 'flex-end' };
   const heroJustify = alignmentMap[hero.contentAlignment] || 'flex-start';
