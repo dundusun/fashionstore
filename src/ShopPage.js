@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
 
 function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -38,14 +39,7 @@ function ShopPage() {
     <div style={{ fontFamily: "'Inter', sans-serif", background: '#fff', minHeight: '100vh', color: '#111' }}>
       
       {/* ─── SIMPLE HEADER ─── */}
-      <header style={{ padding: '20px 60px', borderBottom: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontSize: '1.4rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px' }}>
-          <Link to="/" style={{ color: '#000', textDecoration: 'none' }}>Dundusun</Link>
-        </div>
-        <nav style={{ display: 'flex', gap: '24px', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.9rem' }}>
-          <Link to="/shop" style={{ color: '#000', textDecoration: 'none', borderBottom: '2px solid #000' }}>Shop</Link>
-        </nav>
-      </header>
+      <Navbar isTransparent={false} />
 
       {/* ─── PAGE TITLE ─── */}
       <div style={{ background: '#f8f8f8', padding: '60px', textAlign: 'center' }}>
