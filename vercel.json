@@ -1,9 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/content/:path*",
-      "destination": "https://spellbind-bacterium-sternness.ngrok-free.dev/content/:path*"
-    }
-  ]
-}
-

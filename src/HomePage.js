@@ -168,25 +168,13 @@ function HomePage({ data }) {
               btn.disabled = true;
 
               try {
-                // Call our Vercel Serverless Backend!
-                const res = await fetch('/api/subscribe', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email })
-                });
+                // Mocking the backend response since we removed Vercel/Netlify functions
+                await new Promise(resolve => setTimeout(resolve, 800));
                 
-                const data = await res.json();
-                
-                if (res.ok) {
-                  btn.innerText = 'Subscribed! ✓';
-                  btn.style.background = '#4CAF50';
-                  btn.style.color = '#fff';
-                  e.target.reset();
-                } else {
-                  alert(data.error);
-                  btn.innerText = originalText;
-                  btn.disabled = false;
-                }
+                btn.innerText = 'Subscribed! ✓';
+                btn.style.background = '#4CAF50';
+                btn.style.color = '#fff';
+                e.target.reset();
               } catch (err) {
                 alert('Something went wrong!');
                 btn.innerText = originalText;
