@@ -1,14 +1,14 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function (app) {
+  // Proxy all AEM paths to local AEM instance
   app.use(
     createProxyMiddleware({
-      pathFilter: "/content",
-      target: "https://spellbind-bacterium-sternness.ngrok-free.dev",
+      pathFilter: ["/content", "/bin", "/libs", "/apps"],
+      target: "http://localhost:4502",
       changeOrigin: true,
       secure: false,
       headers: {
-        "ngrok-skip-browser-warning": "true",
         "Authorization": "Basic YWRtaW46YWRtaW4=",
       },
     })

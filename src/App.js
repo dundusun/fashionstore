@@ -9,7 +9,7 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`/content/fashionstore/us/en/home.model.json`, {
+    axios.get(`/content/fashionstore/us/en/home.homedata`, {
       headers: {
         "Authorization": "Basic " + btoa("admin:admin"),
         "ngrok-skip-browser-warning": "true",
