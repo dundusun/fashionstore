@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Navbar";
+import { API_URL } from "../config";
 
 function CheckoutPage() {
   const { cart, totalPrice, setCart } = useCart();
@@ -42,6 +43,12 @@ function CheckoutPage() {
 
     if (cart.length === 0) return;
 
+    // Validate delivery details
+    if (!address.name || !address.phone || !address.street || !address.city || !address.pincode) {
+      alert("దయచేసి మీ డెలివరీ డీటెయిల్స్ (Delivery Details) అన్నీ ఫిల్ చేయండి!");
+      return;
+    }
+
     setLoading(true);
 
     const res = await loadRazorpay();
@@ -53,7 +60,7 @@ function CheckoutPage() {
 
     try {
       // 1. Create order on our backend
-      const result = await axios.post("/api/razorpay/create-order", { amount: totalPrice });
+      const result = await axios.post(`${API_URL}/api/razorpay/create-order`, { amount: totalPrice });
       if (!result.data) {
         alert("Server error. Are you online?");
         setLoading(false);
@@ -84,7 +91,7 @@ function CheckoutPage() {
             orderId: response.razorpay_order_id,
           };
           
-          await axios.post("/api/orders", data);
+          await axios.post(`${API_URL}/api/orders`, data);
           setSuccess(true);
           setCart([]); // clear cart
           setTimeout(() => navigate("/orders"), 2000);

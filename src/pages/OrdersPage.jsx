@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "../Navbar";
+import { API_URL } from "../config";
 
 const STATUS_COLORS = {
   pending: { bg: "#fff3cd", text: "#856404" },
@@ -17,7 +18,7 @@ function OrdersPage() {
 
   useEffect(() => {
     if (user) {
-      axios.get(`/api/orders?userId=${user.uid}`)
+      axios.get(`${API_URL}/api/orders/${user.email}`)
         .then((res) => {
           setOrders(res.data);
           setLoading(false);
