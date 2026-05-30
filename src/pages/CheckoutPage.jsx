@@ -20,6 +20,20 @@ function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
   const handleOrder = async () => {
     if (!user) {
       navigate("/login");
@@ -29,25 +43,67 @@ function CheckoutPage() {
     if (cart.length === 0) return;
 
     setLoading(true);
-    try {
-      await axios.post("/api/orders", {
-        userId: user.uid,
-        userEmail: user.email,
-        items: cart,
-        totalPrice,
-        address,
-        status: "pending",
-      });
 
-      setSuccess(true);
-      setCart([]); // clear cart
-      setTimeout(() => navigate("/orders"), 2000);
+    const res = await loadRazorpay();
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // 1. Create order on our backend
+      const result = await axios.post("/api/razorpay/create-order", { amount: totalPrice });
+      if (!result.data) {
+        alert("Server error. Are you online?");
+        setLoading(false);
+        return;
+      }
+
+      const { amount, id: order_id, currency } = result.data;
+
+      // 2. Setup Razorpay options
+      const options = {
+        key: "rzp_test_SvRi5qjnF7GiKx", // Enter the Key ID generated from the Dashboard
+        amount: amount.toString(),
+        currency: currency,
+        name: "Dundusun Fashion Store",
+        description: "Test Transaction",
+        image: "https://i.ibb.co/3kX9qX6/logo.png",
+        order_id: order_id,
+        handler: async function (response) {
+          // 3. Payment Successful -> Save order in our DB
+          const data = {
+            userId: user.uid,
+            userEmail: user.email,
+            items: cart,
+            totalPrice,
+            address,
+            status: "paid",
+            paymentId: response.razorpay_payment_id,
+            orderId: response.razorpay_order_id,
+          };
+          
+          await axios.post("/api/orders", data);
+          setSuccess(true);
+          setCart([]); // clear cart
+          setTimeout(() => navigate("/orders"), 2000);
+        },
+        prefill: {
+          name: address.name || user.displayName || "Test User",
+          email: user.email,
+          contact: address.phone || "9999999999",
+        },
+        theme: {
+          color: "#000000",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
     } catch (err) {
       console.error(err);
-      // Even if API fails (as we know it's not fully functional), simulate success for now to keep flow working
-      setSuccess(true);
-      setCart([]);
-      setTimeout(() => navigate("/orders"), 2000);
+      alert("Something went wrong!");
     }
     setLoading(false);
   };
@@ -58,8 +114,8 @@ function CheckoutPage() {
         <Navbar isTransparent={false} />
         <div className="flex flex-col items-center justify-center h-[70vh] text-center px-6">
           <div className="text-6xl mb-6">✅</div>
-          <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Order Placed Successfully!</h2>
-          <p className="text-gray-500 text-lg font-medium">Redirecting to your orders page...</p>
+          <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Payment Successful!</h2>
+          <p className="text-gray-500 text-lg font-medium">Your order has been placed securely via Razorpay.</p>
         </div>
       </div>
     );
