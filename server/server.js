@@ -113,6 +113,26 @@ app.post('/api/admin/products', async (req, res) => {
   }
 });
 
+// Admin API for bulk upload
+app.post('/api/admin/products/bulk', async (req, res) => {
+  try {
+    const productsArray = req.body;
+    if (!Array.isArray(productsArray)) {
+      return res.status(400).json({ message: "Data must be an array of products" });
+    }
+    
+    const cleanData = productsArray.map(p => {
+      const { _id, __v, ...rest } = p;
+      return rest;
+    });
+
+    const result = await Product.insertMany(cleanData);
+    res.status(201).json({ message: `Successfully added ${result.length} products!` });
+  } catch (error) {
+    res.status(500).json({ message: "Error in bulk upload", error: error.message });
+  }
+});
+
 // Admin API to delete a product
 app.delete('/api/admin/products', async (req, res) => {
   try {

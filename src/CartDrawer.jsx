@@ -3,7 +3,7 @@ import { useCart } from './context/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 function CartDrawer() {
-  const { cart, removeFromCart, totalPrice, totalItems, isCartOpen, setIsCartOpen } = useCart();
+  const { cart, removeFromCart, updateQuantity, totalPrice, totalItems, isCartOpen, setIsCartOpen } = useCart();
   const navigate = useNavigate();
 
   if (!isCartOpen) return null;
@@ -57,7 +57,23 @@ function CartDrawer() {
                   <h4 className="font-bold text-gray-900 leading-tight mb-1">{item.name}</h4>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{item.category}</p>
                   <div className="flex justify-between items-center">
-                    <p className="font-black text-lg">${item.price.toFixed(2)} <span className="text-gray-400 font-medium text-sm">× {item.quantity}</span></p>
+                    <p className="font-black text-lg">${Number(item.price || 0).toFixed(2)}</p>
+                    
+                    {/* Quantity Controls in Cart */}
+                    <div className="flex items-center border border-gray-200 rounded-lg bg-white">
+                      <button 
+                        onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                        className="w-8 h-8 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 transition-colors"
+                      >-</button>
+                      <span className="w-8 text-center font-bold text-sm">{item.quantity}</span>
+                      <button 
+                        onClick={() => {
+                           const maxStock = item.stock !== undefined ? item.stock : ((item._id.length % 7) + 2);
+                           if (item.quantity < maxStock) updateQuantity(item._id, item.quantity + 1);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 transition-colors"
+                      >+</button>
+                    </div>
                   </div>
                 </div>
 

@@ -73,7 +73,9 @@ function ShopPage({ defaultCategory = 'All' }) {
   let displayedProducts = products;
   
   if (filter !== 'All') {
-    displayedProducts = displayedProducts.filter(p => p.category === filter);
+    displayedProducts = displayedProducts.filter(p => 
+      p.category && p.category.trim().toLowerCase() === filter.trim().toLowerCase()
+    );
   }
 
   if (subcategoryFromUrl) {
@@ -115,7 +117,7 @@ function ShopPage({ defaultCategory = 'All' }) {
       <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row gap-12">
         
         {/* SIDEBAR (FILTERS) */}
-        <aside className="w-full lg:w-64 flex-shrink-0">
+        <aside className="w-full lg:w-64 flex-shrink-0 lg:sticky lg:top-28 lg:self-start">
           <h3 className="text-sm font-black uppercase tracking-widest mb-6 border-b-2 border-black pb-4">Categories</h3>
           <ul className="flex flex-row lg:flex-col gap-4 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
             {categories.map(cat => (
@@ -187,7 +189,7 @@ function ShopPage({ defaultCategory = 'All' }) {
                     </div>
                   </div>
                   <h3 className="font-bold text-lg text-gray-900 mb-1">{prod.name}</h3>
-                  <p className="font-bold text-gray-500">${prod.price.toFixed(2)}</p>
+                  <p className="font-bold text-gray-500">${Number(prod.price || 0).toFixed(2)}</p>
                 </div>
               ))}
             </div>

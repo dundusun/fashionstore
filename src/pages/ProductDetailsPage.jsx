@@ -12,10 +12,12 @@ function ProductDetailsPage() {
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     // Scroll to top when loading a new product
     window.scrollTo(0, 0);
+    setQuantity(1); // Reset quantity when product changes
     
     fetch(`${API_URL}/api/products/${id}`)
       .then(res => {
@@ -46,6 +48,7 @@ function ProductDetailsPage() {
             price: typeof staticProduct.price === 'string' ? parseFloat(staticProduct.price.replace('$', '')) : staticProduct.price,
             image: staticProduct.image,
             category: 'Trending',
+            stock: 4, // Mock low stock for demo
             description: "Experience premium quality with this meticulously crafted piece. Designed for the modern aesthetic, it blends comfort with effortless style."
           });
         }
@@ -75,6 +78,17 @@ function ProductDetailsPage() {
     );
   }
 
+  // Calculate available stock (mocking it to be between 2-8 if not provided by DB)
+  const availableStock = product.stock !== undefined ? product.stock : ((id.length % 7) + 2);
+
+  const handleQuantityChange = (type) => {
+    if (type === 'decrease' && quantity > 1) {
+      setQuantity(quantity - 1);
+    } else if (type === 'increase' && quantity < availableStock) {
+      setQuantity(quantity + 1);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       <Navbar />
@@ -99,23 +113,54 @@ function ProductDetailsPage() {
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 leading-tight">
             {product.name}
           </h1>
-          <div className="text-2xl font-bold text-gray-900 mb-8">
-            ${product.price.toFixed(2)}
+          <div className="text-2xl font-bold text-gray-900 mb-6">
+            ${Number(product.price || 0).toFixed(2)}
           </div>
           
-          <p className="text-gray-600 text-lg mb-10 leading-relaxed">
+          {/* Low Stock Indicator */}
+          {availableStock < 5 && (
+            <div className="mb-6 inline-flex items-center gap-2 bg-red-50 text-red-700 px-4 py-2 rounded-lg font-bold text-sm border border-red-100">
+              <span className="animate-pulse">🔥</span> 
+              Hurry! Only {availableStock} left in stock
+            </div>
+          )}
+
+          <p className="text-gray-600 text-lg mb-8 leading-relaxed">
             {product.description || "Experience premium quality with this meticulously crafted piece. Designed for the modern aesthetic, it blends comfort with effortless style."}
           </p>
 
+          {/* Quantity Selector */}
+          <div className="mb-8">
+            <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Quantity</label>
+            <div className="flex items-center border-2 border-gray-200 rounded-xl w-36 overflow-hidden bg-white">
+              <button 
+                onClick={() => handleQuantityChange('decrease')}
+                disabled={quantity <= 1}
+                className="w-12 h-12 flex items-center justify-center font-bold text-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >-</button>
+              <div className="flex-1 h-12 flex items-center justify-center font-bold text-gray-900 border-x border-gray-200">
+                {quantity}
+              </div>
+              <button 
+                onClick={() => handleQuantityChange('increase')}
+                disabled={quantity >= availableStock}
+                className="w-12 h-12 flex items-center justify-center font-bold text-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >+</button>
+            </div>
+          </div>
+
           <div className="flex gap-4">
             <button 
-              onClick={() => addToCart(product)}
+              onClick={() => addToCart(product, quantity)}
               className="flex-1 bg-black text-white py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-1"
             >
               Add to Cart 🛒
             </button>
             <button 
-              onClick={() => navigate('/checkout')}
+              onClick={() => {
+                addToCart(product, quantity);
+                navigate('/checkout');
+              }}
               className="px-6 py-4 rounded-xl font-bold uppercase tracking-wider border-2 border-black hover:bg-gray-100 transition-colors"
             >
               Buy Now

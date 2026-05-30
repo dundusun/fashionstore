@@ -65,6 +65,25 @@ function AdminDashboard() {
     } catch (e) { console.error(e); }
   };
 
+  const handleBulkUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        const res = await axios.post(`${API_URL}/api/admin/products/bulk`, data);
+        alert(res.data.message);
+        fetchProducts();
+      } catch (error) {
+        console.error("Bulk upload failed:", error);
+        alert("Failed to upload bulk data. Ensure it is a valid JSON array of products.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const inputStyle = {
     width: '100%', padding: '14px', border: '1px solid #ddd', borderRadius: '6px',
     fontSize: '1rem', outline: 'none', marginBottom: '16px', fontFamily: 'inherit'
@@ -106,9 +125,37 @@ function AdminDashboard() {
         {activeTab === "products" && (
           <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
             
-            {/* Add Product Form */}
-            <div style={{ flex: '1 1 400px', background: '#fff', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', height: 'fit-content' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '25px' }}>Add New Product</h3>
+            {/* Add Product Form & Bulk Upload */}
+            <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              <div style={{ background: '#fff', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '25px' }}>Bulk Upload (JSON)</h3>
+                <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '15px' }}>Upload a .json file containing an array of products to add them all at once.</p>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <input 
+                    type="file" 
+                    accept=".json" 
+                    id="bulk-upload-input"
+                    style={{...inputStyle, padding: '10px', flex: 1, marginBottom: 0}}
+                  />
+                  <button onClick={() => {
+                    const fileInput = document.getElementById('bulk-upload-input');
+                    if (fileInput.files.length > 0) {
+                      handleBulkUpload({ target: { files: fileInput.files } });
+                    } else {
+                      alert("Please select a file first!");
+                    }
+                  }} style={{
+                    padding: '0 20px', background: '#000', color: '#fff',
+                    border: 'none', borderRadius: '6px', fontWeight: 800, cursor: 'pointer'
+                  }}>
+                    Upload 🚀
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ background: '#fff', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '25px' }}>Add Single Product</h3>
               <input style={inputStyle} placeholder="Product Name" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} />
               <div style={{ display: 'flex', gap: '16px' }}>
                 <input style={{...inputStyle, flex: 1}} placeholder="Price ($)" type="number" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} />
@@ -125,6 +172,7 @@ function AdminDashboard() {
               }}>
                 Add Product ✅
               </button>
+              </div>
             </div>
 
             {/* Products List */}
