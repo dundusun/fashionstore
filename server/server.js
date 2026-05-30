@@ -48,6 +48,82 @@ app.get('/api/orders/:email', async (req, res) => {
   }
 });
 
+// Admin API to get all orders
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching all orders", error: error.message });
+  }
+});
+
+// Admin API to update order status
+app.patch('/api/orders', async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    const updatedOrder = await Order.findByIdAndUpdate(id, { status }, { new: true });
+    
+    // Create a notification for the user
+    if (updatedOrder) {
+      const Notification = require('./models/Notification');
+      let emoji = status === "shipped" ? "🚚" : status === "delivered" ? "✅" : "📦";
+      const newNotification = new Notification({
+        userEmail: updatedOrder.userEmail,
+        message: `${emoji} Your order #${updatedOrder._id.toString().slice(-8).toUpperCase()} has been ${status}!`,
+      });
+      await newNotification.save();
+    }
+    
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating order status", error: error.message });
+  }
+});
+
+// Notifications Endpoints
+app.get('/api/notifications/:email', async (req, res) => {
+  try {
+    const Notification = require('./models/Notification');
+    const notifs = await Notification.find({ userEmail: req.params.email }).sort({ createdAt: -1 }).limit(10);
+    res.json(notifs);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching notifications", error: error.message });
+  }
+});
+
+app.patch('/api/notifications/:id/read', async (req, res) => {
+  try {
+    const Notification = require('./models/Notification');
+    await Notification.findByIdAndUpdate(req.params.id, { read: true });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Error reading notification", error: error.message });
+  }
+});
+
+// Admin API to add a new product
+app.post('/api/admin/products', async (req, res) => {
+  try {
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.status(201).json(newProduct);
+  } catch (error) {
+    res.status(500).json({ message: "Error adding product", error: error.message });
+  }
+});
+
+// Admin API to delete a product
+app.delete('/api/admin/products', async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Product.findByIdAndDelete(id);
+    res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting product", error: error.message });
+  }
+});
+
 // API Endpoint to get user cart
 app.get('/api/cart/:email', async (req, res) => {
   try {

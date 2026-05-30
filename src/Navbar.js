@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { useCart } from './context/CartContext';
@@ -13,10 +13,24 @@ function Navbar({ isTransparent = false }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeProfile, setActiveProfile] = useState(false);
   
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notifRef = useRef(null);
+  
   const { user, logout } = useAuth();
   const { totalItems, setIsCartOpen } = useCart();
   const navigate = useNavigate();
   const navigation = storeData.navigation || [];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (isSearchOpen && searchProducts.length === 0) {
@@ -28,6 +42,33 @@ function Navbar({ isTransparent = false }) {
         .catch(console.error);
     }
   }, [isSearchOpen, searchProducts.length]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchNotifs = () => {
+        fetch(`${API_URL}/api/notifications/${user.email}`)
+          .then(res => res.json())
+          .then(data => {
+            if (Array.isArray(data)) setNotifications(data);
+          })
+          .catch(console.error);
+      };
+      fetchNotifs();
+      const interval = setInterval(fetchNotifs, 10000); // Polling every 10 seconds
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  const handleReadNotification = async (id) => {
+    try {
+      await fetch(`${API_URL}/api/notifications/${id}/read`, { method: 'PATCH' });
+      setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
+      setShowNotifications(false); // Close the notification dropdown
+      navigate('/orders'); // Redirect the user to their orders page
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const suggestions = searchQuery.trim() 
     ? searchProducts.filter(p => 
@@ -189,6 +230,53 @@ function Navbar({ isTransparent = false }) {
           )}
         </div>
 
+
+        {/* NOTIFICATIONS */}
+        {user && (
+          <div ref={notifRef} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <button onClick={() => setShowNotifications(!showNotifications)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.3rem', position: 'relative' }}>
+              🔔
+              {notifications.filter(n => !n.read).length > 0 && (
+                <span style={{ position: 'absolute', top: '-8px', right: '-10px', background: '#e00000', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '2px 6px', borderRadius: '50%' }}>
+                  {notifications.filter(n => !n.read).length}
+                </span>
+              )}
+            </button>
+
+            {showNotifications && (
+              <div style={{
+                position: 'absolute', top: '100%', right: '-50px', width: '320px', marginTop: '20px',
+                background: '#fff', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                overflow: 'hidden', zIndex: 1000, border: '1px solid #eee'
+              }}>
+                <div style={{ padding: '15px 20px', borderBottom: '1px solid #eee', fontWeight: 800, background: '#fafafa', color: '#000' }}>Notifications</div>
+                <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#888', fontSize: '0.9rem' }}>No new notifications</div>
+                  ) : (
+                    notifications.map(n => (
+                      <div 
+                        key={n._id}
+                        onClick={() => handleReadNotification(n._id)}
+                        style={{ 
+                          padding: '15px 20px', borderBottom: '1px solid #f9f9f9', cursor: 'pointer',
+                          background: n.read ? '#fff' : '#f0f8ff', transition: 'background 0.2s',
+                          display: 'flex', flexDirection: 'column', gap: '5px'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = n.read ? '#f9f9f9' : '#e6f2ff'}
+                        onMouseLeave={e => e.currentTarget.style.background = n.read ? '#fff' : '#f0f8ff'}
+                      >
+                        <div style={{ fontSize: '0.85rem', fontWeight: n.read ? 500 : 700, color: '#000' }}>{n.message}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#888' }}>{new Date(n.createdAt).toLocaleString()}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <button onClick={() => setIsCartOpen(true)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.3rem', position: 'relative' }}>
           🛍️
           {totalItems > 0 && (
@@ -238,7 +326,7 @@ function Navbar({ isTransparent = false }) {
               {activeProfile && (
                 <div style={{ position: 'absolute', top: '100%', right: 0, paddingTop: '10px', zIndex: 1000 }}>
                   <div style={{
-                    background: '#fff', minWidth: '200px', padding: '10px 0',
+                    background: '#fff', minWidth: '260px', padding: '10px 0',
                     boxShadow: '0 10px 40px rgba(0,0,0,0.1)', borderRadius: '12px',
                     animation: 'fadeIn 0.2s ease', overflow: 'hidden', border: '1px solid #eee'
                   }}>

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../Navbar";
+import { API_URL } from "../../config";
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
@@ -27,21 +28,21 @@ function AdminDashboard() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("/api/admin/products");
+      const res = await axios.get(`${API_URL}/api/admin/products`);
       setProducts(res.data);
     } catch (e) { console.error(e); }
   };
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("/api/orders");
+      const res = await axios.get(`${API_URL}/api/orders`);
       setOrders(res.data);
     } catch (e) { console.error(e); }
   };
 
   const handleAddProduct = async () => {
     try {
-      await axios.post("/api/admin/products", newProduct);
+      await axios.post(`${API_URL}/api/admin/products`, newProduct);
       fetchProducts();
       setNewProduct({ name: "", price: "", category: "", stock: "", image: "", description: "" });
       alert("Product added successfully!");
@@ -51,7 +52,7 @@ function AdminDashboard() {
   const handleDeleteProduct = async (id) => {
     if(window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete("/api/admin/products", { data: { id } });
+        await axios.delete(`${API_URL}/api/admin/products`, { data: { id } });
         fetchProducts();
       } catch (e) { console.error(e); }
     }
@@ -59,7 +60,7 @@ function AdminDashboard() {
 
   const handleUpdateOrderStatus = async (id, status) => {
     try {
-      await axios.patch("/api/orders", { id, status });
+      await axios.patch(`${API_URL}/api/orders`, { id, status });
       fetchOrders();
     } catch (e) { console.error(e); }
   };
